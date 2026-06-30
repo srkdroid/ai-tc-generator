@@ -13,7 +13,7 @@ export default function Disclaimer() {
           <AlertTriangle size={18} className="shrink-0 mt-0.5" />
           <div className="flex flex-col">
             <strong>AI-generated test cases — validate against your project requirements and D365FO configuration.</strong>
-            <span className="opacity-80">This tool is an independent project and is not endorsed by or affiliated with Microsoft Corporation.</span>
+            <span className="opacity-80">This tool is an independent project by Ramkumar Subbarao and is not endorsed by or affiliated with Microsoft Corporation.</span>
           </div>
         </div>
       </div>
