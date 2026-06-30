@@ -8,6 +8,7 @@ import ExportPanel from './components/ExportPanel';
 import Disclaimer from './components/Disclaimer';
 import ApiKeyModal, { getApiKey } from './components/ApiKeyModal';
 import DocumentUpload from './components/DocumentUpload';
+import UserGuideModal from './components/UserGuideModal';
 
 import { DEMO_CONTEXT, DEMO_TEST_CASES } from './data/demoData';
 import { getProcessById } from './data/processes';
@@ -17,11 +18,13 @@ import { exportToAdoCsv } from './services/adoExport';
 
 export default function App() {
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
+  const [isUserGuideOpen, setIsUserGuideOpen] = useState(false);
   
   // App State
   const [selectedProcess, setSelectedProcess] = useState(null);
   const [inputMode, setInputMode] = useState('manual'); // 'manual' | 'document'
   const [documentText, setDocumentText] = useState('');
+  const [autoGenerateFlag, setAutoGenerateFlag] = useState(false);
   
   const [context, setContext] = useState({
     legalEntityCount: 1,
@@ -55,6 +58,15 @@ export default function App() {
       multiCountryRollout: DEMO_CONTEXT.multiCountryRollout,
       additionalNotes: DEMO_CONTEXT.additionalNotes
     });
+    
+    // Trigger auto-generate
+    setAutoGenerateFlag(true);
+  };
+
+  const handleClear = () => {
+    setTestCases([]);
+    setGenerationProgress('');
+    setError(null);
   };
 
   const handleGenerate = async () => {
@@ -101,12 +113,21 @@ export default function App() {
     exportToAdoCsv(testCases, selectedProcess?.module);
   }, [testCases, selectedProcess]);
 
+  // Effect to automatically trigger generate when demo is loaded
+  React.useEffect(() => {
+    if (autoGenerateFlag) {
+      setAutoGenerateFlag(false);
+      handleGenerate();
+    }
+  }, [autoGenerateFlag, selectedProcess, context, inputMode]);
+
   const canGenerate = !!selectedProcess && (inputMode === 'manual' || (inputMode === 'document' && !!documentText));
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header 
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
+        onOpenUserGuide={() => setIsUserGuideOpen(true)}
         onDemoClick={handleDemoClick}
         onGenerate={handleGenerate}
         isGenerating={isGenerating}
@@ -172,6 +193,7 @@ export default function App() {
               testCases={testCases}
               onExportExcel={handleExportExcel}
               onExportCSV={handleExportCSV}
+              onClear={handleClear}
             />
           )}
         </div>
@@ -183,6 +205,10 @@ export default function App() {
       <ApiKeyModal 
         isOpen={isApiKeyModalOpen} 
         onClose={() => setIsApiKeyModalOpen(false)} 
+      />
+      <UserGuideModal
+        isOpen={isUserGuideOpen}
+        onClose={() => setIsUserGuideOpen(false)}
       />
     </div>
   );

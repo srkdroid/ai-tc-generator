@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { FileSpreadsheet, FileDown, CheckCircle } from 'lucide-react';
+import { FileSpreadsheet, FileDown, CheckCircle, Trash2 } from 'lucide-react';
 
-export default function ExportPanel({ testCases, onExportExcel, onExportCSV }) {
+export default function ExportPanel({ testCases, onExportExcel, onExportCSV, onClear }) {
   const [toastMessage, setToastMessage] = useState('');
 
   const handleExport = (type) => {
@@ -35,6 +35,15 @@ export default function ExportPanel({ testCases, onExportExcel, onExportCSV }) {
         )}
 
         <div className="flex gap-3 pointer-events-auto">
+          <button
+            onClick={onClear}
+            disabled={isDisabled}
+            className="btn btn-outline bg-white dark:bg-slate-800 shadow-lg text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/20"
+            title="Clear Results"
+          >
+            <Trash2 size={18} />
+          </button>
+
           <button
             onClick={() => handleExport('csv')}
             disabled={isDisabled}
@@ -69,4 +78,5 @@ ExportPanel.propTypes = {
   testCases: PropTypes.array,
   onExportExcel: PropTypes.func.isRequired,
   onExportCSV: PropTypes.func.isRequired,
+  onClear: PropTypes.func.isRequired,
 };

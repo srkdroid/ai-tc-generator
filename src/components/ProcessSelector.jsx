@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Search, ChevronDown, ChevronRight, FileText, Receipt, BookOpen, Landmark, Building2, FolderKanban } from 'lucide-react';
+import { Search, ChevronDown, ChevronRight, FileText, Receipt, BookOpen, Landmark, Building2, FolderKanban, PlusCircle } from 'lucide-react';
 import { PROCESS_TREE, searchProcesses } from '../data/processes';
 
 const iconMap = {
@@ -14,7 +14,8 @@ const iconMap = {
 
 export default function ProcessSelector({ selectedProcess, onSelectProcess }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedModules, setExpandedModules] = useState({});
+  const [expandedModules, setExpandedModules] = useState({ custom: false });
+  const [customProcess, setCustomProcess] = useState({ name: '', module: 'Custom Module', id: 'custom-process', bpcSequenceId: 'CUSTOM-001' });
 
   const toggleModule = (moduleId) => {
     setExpandedModules(prev => ({
@@ -65,7 +66,7 @@ export default function ProcessSelector({ selectedProcess, onSelectProcess }) {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 pb-4">
             {PROCESS_TREE.map(module => {
               const isExpanded = expandedModules[module.id] ?? true; // Default expanded
               return (
@@ -107,6 +108,67 @@ export default function ProcessSelector({ selectedProcess, onSelectProcess }) {
                 </div>
               );
             })}
+
+            {/* Custom Process Accordion */}
+            <div className="border border-blue-200 dark:border-blue-900/50 rounded-lg overflow-hidden mt-4">
+              <button 
+                className="w-full flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                onClick={() => toggleModule('custom')}
+              >
+                <div className="flex items-center gap-2 font-medium text-sm text-blue-700 dark:text-blue-300">
+                  <PlusCircle size={18} />
+                  Add Custom Process
+                </div>
+                <div className="flex items-center gap-2 text-blue-500">
+                  {expandedModules['custom'] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </div>
+              </button>
+              
+              <div className={`collapsible-content ${expandedModules['custom'] ? 'open' : ''}`}>
+                <div className="p-4 flex flex-col gap-3 bg-white dark:bg-slate-900">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Process Name</label>
+                    <input 
+                      type="text" 
+                      className="input-field py-1.5 text-sm" 
+                      placeholder="e.g. Advanced Vendor Onboarding"
+                      value={customProcess.name}
+                      onChange={(e) => {
+                        const updated = { ...customProcess, name: e.target.value };
+                        setCustomProcess(updated);
+                        if (selectedProcess?.id === 'custom-process' || updated.name.length > 2) {
+                          onSelectProcess(updated);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-600 dark:text-gray-400">Module / Category</label>
+                    <input 
+                      type="text" 
+                      className="input-field py-1.5 text-sm" 
+                      placeholder="e.g. Procurement"
+                      value={customProcess.module}
+                      onChange={(e) => {
+                        const updated = { ...customProcess, module: e.target.value };
+                        setCustomProcess(updated);
+                        if (selectedProcess?.id === 'custom-process') {
+                          onSelectProcess(updated);
+                        }
+                      }}
+                    />
+                  </div>
+                  <button 
+                    onClick={() => onSelectProcess(customProcess)}
+                    disabled={!customProcess.name.trim()}
+                    className={`btn btn-sm mt-1 ${selectedProcess?.id === 'custom-process' ? 'bg-blue-600 text-white' : 'btn-outline text-blue-600'}`}
+                  >
+                    {selectedProcess?.id === 'custom-process' ? 'Selected' : 'Use Custom Process'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
           </div>
         )}
       </div>

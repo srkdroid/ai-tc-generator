@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Sun, MoonStar, Settings, FlaskConical, Wand2, Sparkles } from 'lucide-react';
+import { Sun, MoonStar, Settings, FlaskConical, Wand2, Sparkles, HelpCircle } from 'lucide-react';
 
-export default function Header({ onOpenApiKeyModal, onDemoClick, onGenerate, isGenerating, canGenerate }) {
+export default function Header({ onOpenApiKeyModal, onOpenUserGuide, onDemoClick, onGenerate, isGenerating, canGenerate }) {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
 
   useEffect(() => {
@@ -28,6 +28,10 @@ export default function Header({ onOpenApiKeyModal, onDemoClick, onGenerate, isG
           {theme === 'dark' ? <Sun size={20} /> : <MoonStar size={20} />}
         </button>
         
+        <button onClick={onOpenUserGuide} className="btn-ghost" title="User Guide">
+          <HelpCircle size={20} />
+        </button>
+
         <button onClick={onOpenApiKeyModal} className="btn-ghost" title="API Key Settings">
           <Settings size={20} />
         </button>
@@ -55,6 +59,7 @@ export default function Header({ onOpenApiKeyModal, onDemoClick, onGenerate, isG
 
 Header.propTypes = {
   onOpenApiKeyModal: PropTypes.func.isRequired,
+  onOpenUserGuide: PropTypes.func.isRequired,
   onDemoClick: PropTypes.func.isRequired,
   onGenerate: PropTypes.func.isRequired,
   isGenerating: PropTypes.bool.isRequired,
