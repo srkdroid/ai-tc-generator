@@ -38,7 +38,7 @@ export default function ExportPanel({ testCases, onExportExcel, onExportCSV, onC
           <button
             onClick={onClear}
             disabled={isDisabled}
-            className="btn btn-outline bg-white dark:bg-slate-800 shadow-lg text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/30 hover:bg-red-50 dark:hover:bg-red-900/20"
+            className="btn bg-red-100 text-red-600 hover:bg-red-200 border-none dark:bg-red-900/40 dark:text-red-400 dark:hover:bg-red-900/60 shadow-lg"
             title="Clear Results"
           >
             <Trash2 size={18} />
